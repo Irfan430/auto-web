@@ -1,0 +1,40 @@
+{
+  "name": "facebook-auto-tool",
+  "version": "1.0.0",
+  "description": "Production-ready Facebook automation tool with modular architecture",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "facebook",
+    "automation",
+    "puppeteer",
+    "express",
+    "nodejs"
+  ],
+  "author": "Facebook Auto Tool",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "dotenv": "^16.3.1",
+    "puppeteer": "^21.5.2",
+    "uuid": "^9.0.1",
+    "ejs": "^3.1.9",
+    "mongoose": "^8.0.3",
+    "bcrypt": "^5.1.1",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.5",
+    "cors": "^2.8.5",
+    "cookie-parser": "^1.4.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
