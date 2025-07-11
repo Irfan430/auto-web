@@ -71,6 +71,12 @@ app.set('views', path.join(__dirname, 'views'));
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Debug middleware to log all requests
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next();
+});
+
 // Ensure data directory exists
 const dataDir = path.join(__dirname, 'data');
 if (!fs.existsSync(dataDir)) {
@@ -83,15 +89,15 @@ if (!fs.existsSync(cookiesPath)) {
   fs.writeFileSync(cookiesPath, JSON.stringify([], null, 2));
 }
 
-// Routes
-app.use('/auth', authRoutes);
-app.use('/action', actionRoutes);
-app.use('/dashboard', dashboardRoutes);
-
 // Root route - redirect to index.html
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
+// Routes
+app.use('/auth', authRoutes);
+app.use('/action', actionRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -104,7 +110,20 @@ app.get('/health', (req, res) => {
 
 // 404 handler
 app.use('*', (req, res) => {
-  res.status(404).json({ error: 'Route not found' });
+  console.log(`❌ 404 - Route not found: ${req.method} ${req.url}`);
+  
+  // If it's an API request, return JSON
+  if (req.url.startsWith('/api') || req.url.startsWith('/auth') || req.url.startsWith('/action') || req.url.startsWith('/dashboard')) {
+    return res.status(404).json({ 
+      error: 'Route not found',
+      method: req.method,
+      url: req.url,
+      timestamp: new Date().toISOString()
+    });
+  }
+  
+  // For web requests, redirect to home
+  res.redirect('/');
 });
 
 // Global error handler

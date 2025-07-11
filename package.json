@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test-routes.js",
+    "debug": "DEBUG=* node index.js"
   },
   "keywords": [
     "facebook",
