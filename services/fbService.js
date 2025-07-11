@@ -3,7 +3,16 @@ const fs = require('fs');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { isMongoEnabled } = require('../config/db');
-const User = require('../models/User');
+
+// Conditionally load User model only if MongoDB is enabled
+let User = null;
+try {
+  if (require('../config/config.json').useMongoDB) {
+    User = require('../models/User');
+  }
+} catch (error) {
+  console.log('📄 MongoDB model not loaded (using file-based storage)');
+}
 
 class FacebookService {
   constructor() {

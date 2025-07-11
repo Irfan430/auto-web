@@ -8,13 +8,35 @@ const path = require('path');
 const fs = require('fs');
 require('dotenv').config();
 
-// Import routes
-const authRoutes = require('./routes/auth');
-const actionRoutes = require('./routes/action');
-const dashboardRoutes = require('./routes/dashboard');
-
 // Import database configuration
 const { connectDB } = require('./config/db');
+
+// Import routes with error handling
+let authRoutes, actionRoutes, dashboardRoutes;
+
+try {
+  authRoutes = require('./routes/auth');
+  console.log('✅ Auth routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading auth routes:', error.message);
+  process.exit(1);
+}
+
+try {
+  actionRoutes = require('./routes/action');
+  console.log('✅ Action routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading action routes:', error.message);
+  process.exit(1);
+}
+
+try {
+  dashboardRoutes = require('./routes/dashboard');
+  console.log('✅ Dashboard routes loaded successfully');
+} catch (error) {
+  console.error('❌ Error loading dashboard routes:', error.message);
+  process.exit(1);
+}
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -89,15 +111,39 @@ if (!fs.existsSync(cookiesPath)) {
   fs.writeFileSync(cookiesPath, JSON.stringify([], null, 2));
 }
 
+// Test routes for debugging
+app.get('/test', (req, res) => {
+  res.json({ 
+    message: 'Server is working!', 
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Root route - redirect to index.html
 app.get('/', (req, res) => {
+  console.log('🏠 Root route accessed');
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Routes
-app.use('/auth', authRoutes);
-app.use('/action', actionRoutes);
-app.use('/dashboard', dashboardRoutes);
+// Routes with logging
+console.log('🔗 Setting up routes...');
+app.use('/auth', (req, res, next) => {
+  console.log(`🔐 Auth route: ${req.method} ${req.url}`);
+  next();
+}, authRoutes);
+
+app.use('/action', (req, res, next) => {
+  console.log(`⚡ Action route: ${req.method} ${req.url}`);
+  next();
+}, actionRoutes);
+
+app.use('/dashboard', (req, res, next) => {
+  console.log(`📊 Dashboard route: ${req.method} ${req.url}`);
+  next();
+}, dashboardRoutes);
+
+console.log('✅ All routes configured');
 
 // Health check endpoint
 app.get('/health', (req, res) => {
