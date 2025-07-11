@@ -1,0 +1,9 @@
+{
+  "useMongoDB": false,
+  "mongoURI": "mongodb+srv://username:password@cluster.mongodb.net/facebook-auto-tool?retryWrites=true&w=majority",
+  "sessionTimeout": 86400000,
+  "maxConcurrentActions": 5,
+  "actionDelay": 2000,
+  "cookieValidationInterval": 3600000,
+  "defaultUserAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+}
